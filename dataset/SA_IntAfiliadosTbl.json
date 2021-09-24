@@ -1,0 +1,34 @@
+{
+	"name": "SA_IntAfiliadosTbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerMktStarsSA",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodAfiliado",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "IntAfiliados"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

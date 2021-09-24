@@ -1,0 +1,46 @@
+{
+	"name": "SA_AfiliadosTbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerMktStarsSA",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodAfiliado",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "DT_Creation",
+				"type": "date"
+			},
+			{
+				"name": "DT_Inicio",
+				"type": "date"
+			},
+			{
+				"name": "DT_Fim",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Afiliados"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "tblMovies",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "serverdwcarlos_BDMOVIES",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Transf_Movies"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Movies",
+				"type": "varchar"
+			},
+			{
+				"name": "Title",
+				"type": "varchar"
+			},
+			{
+				"name": "genres",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tblMovies"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

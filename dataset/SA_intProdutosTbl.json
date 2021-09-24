@@ -1,0 +1,40 @@
+{
+	"name": "SA_intProdutosTbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerMktStarsSA",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CodProd",
+				"type": "varchar"
+			},
+			{
+				"name": "Name",
+				"type": "varchar"
+			},
+			{
+				"name": "Valor",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "IntProdutos"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

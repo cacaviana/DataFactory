@@ -1,0 +1,194 @@
+{
+	"name": "MktStarsSA",
+	"properties": {
+		"activities": [
+			{
+				"name": "SpTruncateIntAfiliados",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spTruncateIntAfiliados]"
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServerMktStarsSA",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "AfiliadosOLTP_intAfiliadosSA",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SpTruncateIntAfiliados",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CodAfiliado",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CodAfiliado",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OLTP_AfiliadosTbl",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SA_IntAfiliadosTbl",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "intAfiliados_AfiliadosSA",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "AfiliadosOLTP_intAfiliadosSA",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Id",
+									"precision": 10
+								},
+								"sink": {
+									"name": "Id"
+								}
+							},
+							{
+								"source": {
+									"name": "CodAfiliado"
+								},
+								"sink": {
+									"name": "CodAfiliado"
+								}
+							},
+							{
+								"source": {
+									"name": "Name"
+								},
+								"sink": {
+									"name": "Name"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SA_IntAfiliadosTbl",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SA_intAfiliadosCSV",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-05-25T16:34:11Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

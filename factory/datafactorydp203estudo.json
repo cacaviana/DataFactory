@@ -1,0 +1,9 @@
+{
+	"name": "datafactorydp203estudo",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "84383982-61c6-4bbb-b5aa-937a338f54fb",
+		"tenantId": "3143a543-edee-49dc-bd20-22d7a8454e52"
+	}
+}

@@ -1,0 +1,238 @@
+{
+	"name": "VendasHotmartXLSX",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Geral"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "sales_history_20200321134117_DD",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Vendas_Hotmart.xlsx",
+				"fileSystem": "disco1"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Nome do Produto",
+				"type": "String"
+			},
+			{
+				"name": "Nome do Produtor",
+				"type": "String"
+			},
+			{
+				"name": "Documento do Produtor",
+				"type": "String"
+			},
+			{
+				"name": "Nome do Afiliado",
+				"type": "String"
+			},
+			{
+				"name": "Transação",
+				"type": "String"
+			},
+			{
+				"name": "Meio de Pagamento",
+				"type": "String"
+			},
+			{
+				"name": "Origem",
+				"type": "String"
+			},
+			{
+				"name": "Moeda",
+				"type": "String"
+			},
+			{
+				"name": "Preço do Produto",
+				"type": "String"
+			},
+			{
+				"name": "Moeda",
+				"type": "String"
+			},
+			{
+				"name": "Preço da Oferta",
+				"type": "String"
+			},
+			{
+				"name": "Taxa de Câmbio",
+				"type": "String"
+			},
+			{
+				"name": "Moeda",
+				"type": "String"
+			},
+			{
+				"name": "Preço Original",
+				"type": "String"
+			},
+			{
+				"name": "Número da Parcela",
+				"type": "String"
+			},
+			{
+				"name": "Recorrência",
+				"type": "String"
+			},
+			{
+				"name": "Data de Venda",
+				"type": "String"
+			},
+			{
+				"name": "Data de Confirmação",
+				"type": "String"
+			},
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "Nome",
+				"type": "String"
+			},
+			{
+				"name": "Documento",
+				"type": "String"
+			},
+			{
+				"name": "Email",
+				"type": "String"
+			},
+			{
+				"name": "DDD",
+				"type": "String"
+			},
+			{
+				"name": "Telefone",
+				"type": "String"
+			},
+			{
+				"name": "CEP",
+				"type": "String"
+			},
+			{
+				"name": "Cidade",
+				"type": "String"
+			},
+			{
+				"name": "Estado",
+				"type": "String"
+			},
+			{
+				"name": "Bairro",
+				"type": "String"
+			},
+			{
+				"name": "País",
+				"type": "String"
+			},
+			{
+				"name": "Endereço",
+				"type": "String"
+			},
+			{
+				"name": "Número",
+				"type": "String"
+			},
+			{
+				"name": "Complemento",
+				"type": "String"
+			},
+			{
+				"name": "chave",
+				"type": "String"
+			},
+			{
+				"name": "Código do Produto",
+				"type": "String"
+			},
+			{
+				"name": "Código da Afiliação",
+				"type": "String"
+			},
+			{
+				"name": "Código de Oferta",
+				"type": "String"
+			},
+			{
+				"name": "Origem de Checkout",
+				"type": "String"
+			},
+			{
+				"name": "Tipo de Pagamento",
+				"type": "String"
+			},
+			{
+				"name": "Período Grátis",
+				"type": "String"
+			},
+			{
+				"name": "Tem co-produção",
+				"type": "String"
+			},
+			{
+				"name": "Origem da Comissão",
+				"type": "String"
+			},
+			{
+				"name": "Preço Total",
+				"type": "String"
+			},
+			{
+				"name": "Tipo pagamento oferta",
+				"type": "String"
+			},
+			{
+				"name": "Taxa de Câmbio Real",
+				"type": "String"
+			},
+			{
+				"name": "Preço Total Convertido",
+				"type": "String"
+			},
+			{
+				"name": "Quantidade de itens",
+				"type": "String"
+			},
+			{
+				"name": "Oferta de Upgrade",
+				"type": "String"
+			},
+			{
+				"name": "Cupom",
+				"type": "String"
+			},
+			{
+				"name": "Moeda",
+				"type": "String"
+			},
+			{
+				"name": "Valor da Comissão Convertido",
+				"type": "String"
+			},
+			{
+				"name": "Taxa de Câmbio da Comissão",
+				"type": "String"
+			},
+			{
+				"name": "Data Vencimento",
+				"type": "String"
+			},
+			{
+				"name": "Instagram",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

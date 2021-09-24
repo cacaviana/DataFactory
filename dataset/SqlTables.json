@@ -1,0 +1,34 @@
+{
+	"name": "SqlTables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerMV39Tables",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"NomeTabelas": {
+				"type": "string"
+			},
+			"Esquemas": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Geral"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().Esquemas",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().NomeTabelas",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

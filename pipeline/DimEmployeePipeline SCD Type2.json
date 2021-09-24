@@ -1,0 +1,37 @@
+{
+	"name": "DimEmployeePipeline SCD Type2",
+	"properties": {
+		"activities": [
+			{
+				"name": "LoadDimEmployee",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DimEmployeeLoader2",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 16,
+						"computeType": "ComputeOptimized"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "GenericSCD"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-06-22T00:23:48Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

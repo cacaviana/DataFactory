@@ -1,0 +1,86 @@
+{
+	"name": "SCD_intProdutosSA_ProdutosSA_copy1",
+	"properties": {
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SA_intProdutosTbl",
+						"type": "DatasetReference"
+					},
+					"name": "SAintProdutosTbl"
+				},
+				{
+					"dataset": {
+						"referenceName": "SA_ProdutosTbl",
+						"type": "DatasetReference"
+					},
+					"name": "SAProdutosTbl"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SA_ProdutosTbl",
+						"type": "DatasetReference"
+					},
+					"name": "SAProdutosIns"
+				},
+				{
+					"dataset": {
+						"referenceName": "SA_ProdutosTbl",
+						"type": "DatasetReference"
+					},
+					"name": "SAProdutosInsUpdate"
+				},
+				{
+					"dataset": {
+						"referenceName": "SA_ProdutosTbl",
+						"type": "DatasetReference"
+					},
+					"name": "SAProdutosInativos"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SortCodProd"
+				},
+				{
+					"name": "SortCodProdSA"
+				},
+				{
+					"name": "MergeJoin"
+				},
+				{
+					"name": "DivCondicional"
+				},
+				{
+					"name": "CriarDatasNR"
+				},
+				{
+					"name": "ExisteBranch"
+				},
+				{
+					"name": "CriarDataAtivacao"
+				},
+				{
+					"name": "UpdateInactive"
+				},
+				{
+					"name": "InactiveFields"
+				},
+				{
+					"name": "NomerColunas"
+				},
+				{
+					"name": "NomearColunas"
+				}
+			],
+			"script": "source(output(\n\t\tId as integer,\n\t\tCodProd as string,\n\t\tName as string,\n\t\tValor as decimal(19,4)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SAintProdutosTbl\nsource(output(\n\t\tId as integer,\n\t\tCodProd as string,\n\t\tName as string,\n\t\tValor as decimal(19,4),\n\t\tDT_Creation as date,\n\t\tDT_Inicio as date,\n\t\tDT_Fim as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SAProdutosTbl\nNomearColunas sort(asc(CodProdintSA, true)) ~> SortCodProd\nNomerColunas sort(asc(CodProdSA, true)) ~> SortCodProdSA\nSortCodProd, SortCodProdSA join(CodProdintSA == CodProdSA,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> MergeJoin\nMergeJoin split(isNull(CodProdSA),\n\tdisjoint: false) ~> DivCondicional@(NovosRegistros, ModificarRegistros)\nDivCondicional@NovosRegistros derive(DT_CreationNR = toDate(currentUTC()),\n\t\tDT_InicioNR = toDate(currentUTC())) ~> CriarDatasNR\nDivCondicional@ModificarRegistros, SortCodProdSA exists(CodProdintSA == NomerColunas@CodProdSA &&\r\n(\r\n    NameintSA != NomerColunas@NameSA ||\r\n\r\n    ValorintSA != ValorintSA \r\n\r\n\r\n),\n\tnegate:false,\n\tbroadcast: 'auto')~> ExisteBranch\nExisteBranch derive(DT_InicioAtivacao = toDate(currentUTC())) ~> CriarDataAtivacao\nInactiveFields alterRow(updateIf(true())) ~> UpdateInactive\nExisteBranch derive(DT_Fim_Inactive = toDate(currentUTC())) ~> InactiveFields\nSAProdutosTbl select(mapColumn(\n\t\tIdSA = Id,\n\t\tCodProdSA = CodProd,\n\t\tNameSA = Name,\n\t\tValorSA = Valor,\n\t\tDT_CreationSA = DT_Creation,\n\t\tDT_InicioSA = DT_Inicio,\n\t\tDT_FimSA = DT_Fim\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> NomerColunas\nSAintProdutosTbl select(mapColumn(\n\t\tIdintSA = Id,\n\t\tCodProdintSA = CodProd,\n\t\tNameintSA = Name,\n\t\tValorintSA = Valor\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> NomearColunas\nCriarDatasNR sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tCodProd as string,\n\t\tName as string,\n\t\tValor as decimal(19,4),\n\t\tDT_Creation as date,\n\t\tDT_Inicio as date,\n\t\tDT_Fim as date\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tCodProd = CodProdintSA,\n\t\tName = CodProdintSA,\n\t\tValor = ValorintSA,\n\t\tDT_Creation = DT_CreationNR,\n\t\tDT_Inicio = DT_InicioNR\n\t)) ~> SAProdutosIns\nCriarDataAtivacao sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tCodProd as string,\n\t\tName as string,\n\t\tValor as decimal(19,4),\n\t\tDT_Creation as date,\n\t\tDT_Inicio as date,\n\t\tDT_Fim as date\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tCodProd = CodProdintSA,\n\t\tName = NameintSA,\n\t\tValor = ValorintSA,\n\t\tDT_Inicio = DT_InicioAtivacao\n\t)) ~> SAProdutosInsUpdate\nUpdateInactive sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tCodProd as string,\n\t\tName as string,\n\t\tValor as decimal(19,4),\n\t\tDT_Creation as date,\n\t\tDT_Inicio as date,\n\t\tDT_Fim as date\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Id'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tId = IdSA,\n\t\tCodProd = CodProdSA,\n\t\tName = NameSA,\n\t\tValor = ValorSA,\n\t\tDT_Fim = DT_Fim_Inactive\n\t)) ~> SAProdutosInativos"
+		}
+	}
+}

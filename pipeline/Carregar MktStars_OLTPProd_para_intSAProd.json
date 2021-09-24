@@ -1,0 +1,139 @@
+{
+	"name": "Carregar MktStars_OLTPProd_para_intSAProd",
+	"properties": {
+		"activities": [
+			{
+				"name": "Truncar IntProdutos",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[spTruncateIntProdutos]"
+				},
+				"linkedServiceName": {
+					"referenceName": "SqlServerMktStarsSA",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Copiar de OLTP_ProdutosTbl para SA_intProdutosCSV",
+				"description": "Carregar da OLTP_Produtos para SA_intProdutos",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Truncar IntProdutos",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "CodProd",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "CodProd",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Valor",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								},
+								"sink": {
+									"name": "Valor",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OLTP_ProdutosTbl",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SA_intProdutosTbl",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "MarketingStars"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-06-22T00:26:34Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

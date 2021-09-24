@@ -1,0 +1,16 @@
+{
+	"name": "TableList",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerMV39Tables",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Geral"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

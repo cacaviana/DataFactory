@@ -1,0 +1,47 @@
+{
+	"name": "DTF_Transf_Movies_copy1",
+	"properties": {
+		"folder": {
+			"name": "Transf_Movies"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "MoviesDB",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesADLS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "MoviesDL",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesDL"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SELECT"
+				},
+				{
+					"name": "Moviesplus1950"
+				},
+				{
+					"name": "DerivadaPrimaryGenre"
+				},
+				{
+					"name": "RankMoviesByRating"
+				},
+				{
+					"name": "AggregateRatings"
+				}
+			],
+			"script": "source(output(\n\t\tmovie as string,\n\t\ttitle as string,\n\t\tgenres as string,\n\t\tyear as string,\n\t\tRating as string,\n\t\t{Rotton Tomato} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> MoviesADLS\nMoviesADLS select(mapColumn(\n\t\tmovie,\n\t\ttitle,\n\t\tgenres,\n\t\tyear,\n\t\tRating,\n\t\t{Rotten Tomato} = {Rotton Tomato}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SELECT\nSELECT filter(toInteger(year) > 1950) ~> Moviesplus1950\nMoviesplus1950 derive(PrimaryGenre = iif(locate('|', genres) > 1, left(genres, locate('|', genres) -1), genres)) ~> DerivadaPrimaryGenre\nDerivadaPrimaryGenre window(over(PrimaryGenre,\n\t\tyear),\n\tasc({Rotten Tomato}, true),\n\tRatingsRank = rank()) ~> RankMoviesByRating\nRankMoviesByRating aggregate(groupBy(PrimaryGenre,\n\t\tyear),\n\tAverageRating = avg(toInteger({Rotten Tomato})),\n\t\tHighestRated = first(title),\n\t\tLowerRated = last(title),\n\t\tNumberOfMovies = count()) ~> AggregateRatings\nAggregateRatings sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string\n\t),\n\tpartitionFileNames:['MoviesDLFinal.csv'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tPrimaryGenre,\n\t\tyear,\n\t\tAverageRating,\n\t\tHighestRated,\n\t\tLowerRated,\n\t\tNumberOfMovies\n\t),\n\tpartitionBy('hash', 1)) ~> MoviesDL"
+		}
+	}
+}
